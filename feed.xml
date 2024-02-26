@@ -1,0 +1,844 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Metric Panda Games</title>
+    <description>Game development blog. Upcoming game: Rival Fortress!
+</description>
+    <link>https://metricpanda.com/</link>
+    <atom:link href="https://metricpanda.com/feed.xml" rel="self" type="application/rss+xml"/>
+    <pubDate>Thu, 04 Jul 2019 22:38:32 +0200</pubDate>
+    <lastBuildDate>Thu, 04 Jul 2019 22:38:32 +0200</lastBuildDate>
+    <generator>Jekyll v3.8.6</generator>
+    
+      <item>
+        <title>Rival Fortress Update #48: Visual Studio Debugger Annoyances</title>
+        <description>&lt;p&gt;I do most of my game development on Linux, and I’m very happy with &lt;a href=&quot;https://www.gnu.org/software/gdb/&quot;&gt;GDB&lt;/a&gt;, but when I have to do some debugging on Windows, Visual Studio is my debugger of choice.&lt;/p&gt;
+
+&lt;p&gt;In this post I’ll &lt;em&gt;lightly&lt;/em&gt; rant about some of the features (or lack thereof) of the Visual Studio 2015 debugger:&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;
+    &lt;p&gt;Let me add notes to variables in the &lt;strong&gt;Watch window&lt;/strong&gt;. I often need to watch raw memory locations casted to the appropriate type (i.e. &lt;code class=&quot;highlighter-rouge&quot;&gt;(Entity*)0x10021F0&lt;/code&gt;) in order to keep an eye on variables that are out of scope of the current function but I know still exist.
+Without notes I sometimes have the watch window full of hex addresses casted to the same type, but no idea which one is which.
+A typical use case is watching a stack variable when stepping into a function.&lt;/p&gt;
+
+    &lt;p&gt;&lt;strong&gt;In GDB&lt;/strong&gt; I don’t have this problem because I can easily scroll back and see the entire debugging session, and search through it with few keystrokes.&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;Let me highlight a memory range in the &lt;strong&gt;Memory window&lt;/strong&gt;. Maybe by dragging to select bytes and right-clicking.
+This would in order to easily find the memory location when juggling multiple memory windows or jumping around a lot. I don’t know about you, but I really think the &lt;strong&gt;Memory window&lt;/strong&gt; should get more love.&lt;/p&gt;
+
+    &lt;p&gt;&lt;strong&gt;In GDB&lt;/strong&gt; I use the awesome &lt;a href=&quot;https://github.com/cyrus-and/gdb-dashboard&quot;&gt;gdb-dashboard&lt;/a&gt; to keep an eye on multiple memory blocks of arbitrary sizes, as well as the following &lt;code class=&quot;highlighter-rouge&quot;&gt;define&lt;/code&gt; that dumps a memory address+length:&lt;/p&gt;
+  &lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-cpp&quot; data-lang=&quot;cpp&quot;&gt;&lt;span class=&quot;n&quot;&gt;define&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;xdd&lt;/span&gt;
+  &lt;span class=&quot;n&quot;&gt;dump&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;binary&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;memory&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;/&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;tmp&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;/&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;dump&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;bin&lt;/span&gt; &lt;span class=&quot;err&quot;&gt;$&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;arg0&lt;/span&gt; &lt;span class=&quot;err&quot;&gt;$&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;arg0&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;+&lt;/span&gt;&lt;span class=&quot;err&quot;&gt;$&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;arg1&lt;/span&gt;
+  &lt;span class=&quot;n&quot;&gt;shell&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;hexdump&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;-&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;C&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;/&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;tmp&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;/&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;dump&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;bin&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;end&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;
+    &lt;p&gt;Show me the string length when inspecting a string in the &lt;strong&gt;Text Visualizer&lt;/strong&gt;! Please, just add a little text box with the string length.&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;Let me see the byte representation of a string when viewing it in the &lt;strong&gt;Text Visualizer&lt;/strong&gt; (similar to the Memory window).&lt;/li&gt;
+  &lt;li&gt;Let me drag the value of a &lt;code class=&quot;highlighter-rouge&quot;&gt;char[]&lt;/code&gt; as an address to a new cell just like I can with &lt;code class=&quot;highlighter-rouge&quot;&gt;char*&lt;/code&gt;.&lt;/li&gt;
+  &lt;li&gt;Show me the memory address of a byte when mousing over an octet in a &lt;strong&gt;Memory window&lt;/strong&gt;.&lt;/li&gt;
+  &lt;li&gt;Add the “Hexadecimal display” toggle in the contextual menu for other windows too, (e.g. in the disassembly window), not only in the &lt;strong&gt;watch/locals/autos windows&lt;/strong&gt;.&lt;/li&gt;
+  &lt;li&gt;Let me drag out of scope variable addresses to the &lt;strong&gt;Memory window&lt;/strong&gt; (useful when stepping into a function and want to inspect outer scope stack variables that are still valid).&lt;/li&gt;
+&lt;/ul&gt;
+
+</description>
+        <pubDate>Mon, 12 Dec 2016 01:00:00 +0100</pubDate>
+        <link>https://metricpanda.com/rival-fortress-update-48-visual-studio-debugger-annoyances/index.html</link>
+        <guid isPermaLink="true">https://metricpanda.com/rival-fortress-update-48-visual-studio-debugger-annoyances/index.html</guid>
+        
+        
+        <category>technical</category>
+        
+        <category>development</category>
+        
+        <category>engine</category>
+        
+        <category>rival-fortress</category>
+        
+      </item>
+    
+      <item>
+        <title>Rival Fortress Update #47: Logical vs Memory Structure Arrangement</title>
+        <description>&lt;p&gt;In a previous post I talked about how &lt;a href=&quot;/rival-fortress-update-35-avoiding-automatic-structure-padding-in-c/index.html&quot;&gt;avoiding automatic structure padding&lt;/a&gt; can be beneficial for performance, because of the importance of &lt;a href=&quot;https://en.wikipedia.org/wiki/CPU_cache#Cache_miss&quot;&gt;cache locality&lt;/a&gt; in modern CPU architectures.&lt;/p&gt;
+
+&lt;p&gt;Today I’ll talk about why I wish C or C++ would allow us to specify a &lt;strong&gt;logical arrangement&lt;/strong&gt; for &lt;code class=&quot;highlighter-rouge&quot;&gt;struct&lt;/code&gt; members in order to increase code readability.&lt;/p&gt;
+
+&lt;h2 id=&quot;data-structure-alignment&quot;&gt;Data structure alignment&lt;/h2&gt;
+
+&lt;p&gt;If you specify a structure or class in C/C++, the compiler will arrange its members in memory in the same order as you specified them in the &lt;code class=&quot;highlighter-rouge&quot;&gt;struct&lt;/code&gt;/&lt;code class=&quot;highlighter-rouge&quot;&gt;class&lt;/code&gt; definition (ignoring for the sake of simplicity virtual table pointers added in C++).&lt;/p&gt;
+
+&lt;p&gt;So, for example, the following &lt;code class=&quot;highlighter-rouge&quot;&gt;struct&lt;/code&gt; will have the member &lt;code class=&quot;highlighter-rouge&quot;&gt;X&lt;/code&gt; come before &lt;code class=&quot;highlighter-rouge&quot;&gt;Y&lt;/code&gt; in memory.&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-cpp&quot; data-lang=&quot;cpp&quot;&gt;&lt;span class=&quot;k&quot;&gt;struct&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;MyData&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+  &lt;span class=&quot;kt&quot;&gt;char&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;X&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt; &lt;span class=&quot;c1&quot;&gt;// 1 byte&lt;/span&gt;
+  &lt;span class=&quot;kt&quot;&gt;int&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;Y&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;  &lt;span class=&quot;c1&quot;&gt;// 4 bytes&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;};&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;In this case, the compiler will also insert 3 bytes of padding after &lt;code class=&quot;highlighter-rouge&quot;&gt;X&lt;/code&gt; in order to keep &lt;code class=&quot;highlighter-rouge&quot;&gt;Y&lt;/code&gt; aligned to a word boundary.&lt;/p&gt;
+
+&lt;h2 id=&quot;when-default-arrangement-sucks&quot;&gt;When default arrangement sucks&lt;/h2&gt;
+
+&lt;p&gt;Default structure arrangement can be problematic at times, especially when dealing with large structures.&lt;/p&gt;
+
+&lt;p&gt;For example, it is often much more readable to group fields together logically, but this can lead to memory memory wastage caused by padding, like in the following simple example:&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-cpp&quot; data-lang=&quot;cpp&quot;&gt;&lt;span class=&quot;k&quot;&gt;struct&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;ReadableButSuboptimal&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+  &lt;span class=&quot;n&quot;&gt;entity&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;*&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;Entities&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+  &lt;span class=&quot;n&quot;&gt;u16&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;EntityCount&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+
+  &lt;span class=&quot;n&quot;&gt;mesh&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;*&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;Meshes&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+  &lt;span class=&quot;n&quot;&gt;u8&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;MeshCount&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+
+  &lt;span class=&quot;n&quot;&gt;shader&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;*&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;Shaders&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+  &lt;span class=&quot;n&quot;&gt;u8&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;ShaderCount&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+
+  &lt;span class=&quot;n&quot;&gt;u32&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;Flags&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;};&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;This is a perfectly reasonable arrangement for a human: each pointer is followed by the count for the array.&lt;/p&gt;
+
+&lt;p&gt;Unfortunately, it also wastes memory, because of the bytes of padding introduced by the compiler. An optimal, but less readable arrangement would be the following:&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-cpp&quot; data-lang=&quot;cpp&quot;&gt;&lt;span class=&quot;k&quot;&gt;struct&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;LessReadableButOptimal&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+  &lt;span class=&quot;n&quot;&gt;entity&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;*&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;Entities&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+  &lt;span class=&quot;n&quot;&gt;mesh&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;*&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;Meshes&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+  &lt;span class=&quot;n&quot;&gt;shader&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;*&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;Shaders&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+
+  &lt;span class=&quot;n&quot;&gt;u16&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;EntityCount&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+  &lt;span class=&quot;n&quot;&gt;u8&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;MeshCount&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+  &lt;span class=&quot;n&quot;&gt;u8&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;ShaderCount&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+
+  &lt;span class=&quot;n&quot;&gt;u32&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;Flags&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;};&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;This arrangement wastes no bytes in padding, but is, in my opinion, less readable than the previous.&lt;/p&gt;
+
+&lt;h2 id=&quot;logical-arrangement-as-an-option&quot;&gt;Logical arrangement as an option&lt;/h2&gt;
+
+&lt;p&gt;A better approach for cases like this where the order of members is not important would be to specify structure members logically, for example by decorating the structure like so:&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-cpp&quot; data-lang=&quot;cpp&quot;&gt;&lt;span class=&quot;k&quot;&gt;struct&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;InAnIdealWorld&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+  &lt;span class=&quot;n&quot;&gt;entity&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;*&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;Entities&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+  &lt;span class=&quot;n&quot;&gt;u16&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;EntityCount&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+
+  &lt;span class=&quot;n&quot;&gt;mesh&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;*&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;Meshes&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+  &lt;span class=&quot;n&quot;&gt;u8&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;MeshCount&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+
+  &lt;span class=&quot;n&quot;&gt;shader&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;*&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;Shaders&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+  &lt;span class=&quot;n&quot;&gt;u8&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;ShaderCount&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+
+  &lt;span class=&quot;n&quot;&gt;u32&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;Flags&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;__attribute__&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;((&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;rearrange&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;));&lt;/span&gt; &lt;span class=&quot;c1&quot;&gt;// NOTE: Made up attribute, doesn't actually exist&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;This would tell the compiler: “Hey, I don’t really care about the order in which the members of this struct are laid out, rearrange them at will”.&lt;/p&gt;
+
+&lt;p&gt;Obviously this shouldn’t be the default behavior as it would cause all sorts of bugs when dealing with structures that have to cross API boundaries between libraries, but it would be very useful for internal subsystems…&lt;/p&gt;
+
+&lt;p&gt;I think ;)&lt;/p&gt;
+</description>
+        <pubDate>Mon, 05 Dec 2016 01:00:00 +0100</pubDate>
+        <link>https://metricpanda.com/rival-fortress-update-47-logical-vs-memory-structure-arrangement/index.html</link>
+        <guid isPermaLink="true">https://metricpanda.com/rival-fortress-update-47-logical-vs-memory-structure-arrangement/index.html</guid>
+        
+        
+        <category>technical</category>
+        
+        <category>development</category>
+        
+        <category>engine</category>
+        
+        <category>rival-fortress</category>
+        
+      </item>
+    
+      <item>
+        <title>Rival Fortress Update #46: Single Instance Games On Windows With C/C++</title>
+        <description>&lt;p&gt;This week, among other Windows related things, I added a constrain to allow only a single instance of &lt;a href=&quot;/rival-fortress/index.html&quot;&gt;Rival Fortress&lt;/a&gt; to be run. This comes for free for games on &lt;code class=&quot;highlighter-rouge&quot;&gt;Steam&lt;/code&gt; or &lt;code class=&quot;highlighter-rouge&quot;&gt;GOG Galaxy&lt;/code&gt;, but it is a consideration when you are also distributing your game through other means.&lt;/p&gt;
+
+&lt;h2 id=&quot;the-naive-approach&quot;&gt;The naive approach&lt;/h2&gt;
+&lt;p&gt;A naive approach is to use some sort of &lt;em&gt;lock&lt;/em&gt; file that gets written by the first instance to a known location and checked for existence by subsequent instances.
+The problem is that if your application fails to do its cleanup, you are left in a broken state where the user cannot open your app, unless they manually delete your super secret lock file.&lt;/p&gt;
+
+&lt;p&gt;I’ve seen this done quite a few times in other code bases and the amount of code required to handle all possible failure cases is cringe-worthy.&lt;/p&gt;
+
+&lt;h2 id=&quot;the-lightweight-approach&quot;&gt;The lightweight approach&lt;/h2&gt;
+
+&lt;p&gt;A interesting approach is based on leveraging the &lt;strong&gt;shared&lt;/strong&gt; sections of &lt;a href=&quot;https://en.wikipedia.org/wiki/Portable_Executable&quot;&gt;Portable Executables&lt;/a&gt;.&lt;/p&gt;
+
+&lt;p&gt;Shared sections are neat little feature that allow multiple instances of the same executable or DLL to have a shared address space.&lt;/p&gt;
+
+&lt;p&gt;This can be exploited for the following super-lightweight solution to single instance applications:&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-c--&quot; data-lang=&quot;c++&quot;&gt;&lt;span class=&quot;cp&quot;&gt;#ifdef _MSC_VER
+#pragma comment(linker, &quot;/SECTION:.oneinst,RWS&quot;)
+#pragma data_seg(&quot;.oneinst&quot;)
+&lt;/span&gt;&lt;span class=&quot;kt&quot;&gt;int&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;IntancesRunning&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+&lt;span class=&quot;cp&quot;&gt;#pragma data_seg()
+&lt;/span&gt;
+&lt;span class=&quot;cp&quot;&gt;#else
+&lt;/span&gt;
+&lt;span class=&quot;c1&quot;&gt;//NOTE: GCC&lt;/span&gt;
+&lt;span class=&quot;kt&quot;&gt;int&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;InstancesRunning&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;__attribute__&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;((&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;section&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;.oneinst&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;),&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;shared&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;))&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+&lt;span class=&quot;cp&quot;&gt;#endif
+&lt;/span&gt;
+&lt;span class=&quot;kt&quot;&gt;int&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;WinMain&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(...)&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+    &lt;span class=&quot;k&quot;&gt;if&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;InstancesRunning&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;++&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;==&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+    &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+      &lt;span class=&quot;c1&quot;&gt;// NOTE: Normal code path&lt;/span&gt;
+    &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+    &lt;span class=&quot;k&quot;&gt;else&lt;/span&gt;
+    &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+      &lt;span class=&quot;c1&quot;&gt;// NOTE: Handle second instance running&lt;/span&gt;
+    &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+    &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;This snippet creates the variable &lt;code class=&quot;highlighter-rouge&quot;&gt;InstancesRunning&lt;/code&gt; in the section &lt;code class=&quot;highlighter-rouge&quot;&gt;.oneinst&lt;/code&gt; (that I made up) and marks it as &lt;strong&gt;shared&lt;/strong&gt; using the &lt;code class=&quot;highlighter-rouge&quot;&gt;#pragma&lt;/code&gt; statement on MSVC (&lt;code class=&quot;highlighter-rouge&quot;&gt;RWS&lt;/code&gt;: &lt;strong&gt;R&lt;/strong&gt;eadable &lt;strong&gt;W&lt;/strong&gt;ritable &lt;strong&gt;S&lt;/strong&gt;hared) and the &lt;code class=&quot;highlighter-rouge&quot;&gt;__attribute__&lt;/code&gt; on &lt;a href=&quot;https://gcc.gnu.org/onlinedocs/gcc-4.9.0/gcc/Variable-Attributes.html&quot;&gt;GCC&lt;/a&gt;. (You can also specify the command directly to &lt;code class=&quot;highlighter-rouge&quot;&gt;link.exe&lt;/code&gt; using: &lt;code class=&quot;highlighter-rouge&quot;&gt;-section:.oneinst,RWS&lt;/code&gt;, just as the #pragma statement does).&lt;/p&gt;
+
+&lt;p&gt;When the last instance of an application exists, the shared memory is unmapped and the &lt;code class=&quot;highlighter-rouge&quot;&gt;InstanceRunning&lt;/code&gt; variable is “reset”.&lt;/p&gt;
+
+&lt;p&gt;A downside to this approach is that it only works for &lt;strong&gt;exact&lt;/strong&gt; instances of the executable, so if the user makes a copy of the executable, windows will not map the section in the same address space as the first one.&lt;/p&gt;
+
+&lt;p&gt;You can read more about this approach in the MSDN article &lt;a href=&quot;https://msdn.microsoft.com/en-us/library/h90dkhs0(v=vs.90).aspx&quot;&gt;How do I share data in my DLL with an application or with other DLLs?&lt;/a&gt;. It’s intended for DLLs, but works just as fine with normal executables.&lt;/p&gt;
+
+&lt;p&gt;Also, if you are writing an application with security concerns read Raymond Chen’s &lt;a href=&quot;https://blogs.msdn.microsoft.com/oldnewthing/20040804-00/?p=38253&quot;&gt;Why .shared sections are a security hole&lt;/a&gt; before using this approach to shuttle data back and forth between instances.&lt;/p&gt;
+
+&lt;h2 id=&quot;the-best-approach&quot;&gt;The best approach&lt;/h2&gt;
+&lt;p&gt;The ideal approach is to use a named &lt;code class=&quot;highlighter-rouge&quot;&gt;mutex&lt;/code&gt; using a call to &lt;a href=&quot;https://msdn.microsoft.com/en-us/library/windows/desktop/ms682411(v=vs.85).aspx?f=255&amp;amp;MSPPError=-2147217396&quot;&gt;CreateMutex&lt;/a&gt; during startup.
+This works well and, to my knowledge, has no downsides.&lt;/p&gt;
+
+&lt;p&gt;This is how you would implement one:&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-c--&quot; data-lang=&quot;c++&quot;&gt;&lt;span class=&quot;kt&quot;&gt;int&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;WinMain&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(...)&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;CreateMutexA&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;&quot;Global&lt;/span&gt;&lt;span class=&quot;se&quot;&gt;\\&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;MyGameMutex&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+    &lt;span class=&quot;k&quot;&gt;if&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;GetLastError&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;!=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;ERROR_ALREADY_EXISTS&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+    &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+      &lt;span class=&quot;c1&quot;&gt;// NOTE: Normal code path&lt;/span&gt;
+    &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+    &lt;span class=&quot;k&quot;&gt;else&lt;/span&gt;
+    &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+      &lt;span class=&quot;c1&quot;&gt;// NOTE: Handle second instance running&lt;/span&gt;
+    &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+    &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;A global named mutex is created by the first instance of your application, and cleaned up automatically by Windows when your application shuts down. If a second instance of the application starts, the call to &lt;code class=&quot;highlighter-rouge&quot;&gt;GetLastError()&lt;/code&gt; will return &lt;code class=&quot;highlighter-rouge&quot;&gt;ERROR_ALREADY_EXISTS&lt;/code&gt;, so you can check that.&lt;/p&gt;
+
+</description>
+        <pubDate>Mon, 28 Nov 2016 01:00:00 +0100</pubDate>
+        <link>https://metricpanda.com/rival-fortress-update-46-single-instance-games-on-windows-with-c-cpp/index.html</link>
+        <guid isPermaLink="true">https://metricpanda.com/rival-fortress-update-46-single-instance-games-on-windows-with-c-cpp/index.html</guid>
+        
+        
+        <category>technical</category>
+        
+        <category>development</category>
+        
+        <category>engine</category>
+        
+        <category>rival-fortress</category>
+        
+      </item>
+    
+      <item>
+        <title>Rival Fortress Update #45: Dealing with __chkstk/__chkstk_ms when Cross-Compiling For Windows</title>
+        <description>&lt;p&gt;If you have a cross-compiling toolchain for building Windows executables read on.&lt;/p&gt;
+
+&lt;p&gt;I use both &lt;a href=&quot;https://clang.llvm.org/&quot;&gt;Clang&lt;/a&gt; and &lt;a href=&quot;https://mingw-w64.org/doku.php&quot;&gt;Mingw-w64&lt;/a&gt;, and I’ve recently discovered a “fun” little gotcha that has to do with the &lt;code class=&quot;highlighter-rouge&quot;&gt;__chkstk&lt;/code&gt; routine that is output automatically by the code generator of both compilers.&lt;/p&gt;
+
+&lt;h2 id=&quot;what-is-__chkstk&quot;&gt;What is __chkstk&lt;/h2&gt;
+
+&lt;p&gt;The &lt;a href=&quot;https://msdn.microsoft.com/en-us/library/ms648426(v=vs.85).aspx&quot;&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;__chkstk&lt;/code&gt; routine&lt;/a&gt; (also known as &lt;code class=&quot;highlighter-rouge&quot;&gt;__alloc_probe&lt;/code&gt;) is a little procedure that is inserted by compilers targeting Windows executables in the prologue code for each function that uses more that 4K bytes (8K in 64bit).&lt;/p&gt;
+
+&lt;p&gt;By default Windows allocates stack space in 4K pages with a &lt;em&gt;guard page&lt;/em&gt; at the end that triggers an access violation when the program tries to access it, causing the operating system to allocate more stack space.&lt;/p&gt;
+
+&lt;p&gt;A problem arises when a function uses more than 2 pages for its stack variables. This means that it could possibly access memory &lt;strong&gt;past&lt;/strong&gt; the guard page, thus triggering an access violation that won’t be handled by the OS as a simple request for more stack space, but as a generic exception that would terminate the application.&lt;/p&gt;
+
+&lt;p&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;__chkstk&lt;/code&gt; is the solution to this problem. Upon function entry, it touches memory addresses every 4K from the current stack pointer location up to the size needed by the function. This triggers the guard pages in the proper sequence and commits additional memory to the stack as required.&lt;/p&gt;
+
+&lt;p&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;__chkstk&lt;/code&gt; can also speed up your application’s start up time, even though, for most indie games and even some triple A game, the speed up will be negligible.&lt;/p&gt;
+
+&lt;p&gt;Read &lt;a href=&quot;https://msdn.microsoft.com/library/aa290051.aspx&quot;&gt;Compiler Security Checks In Depth&lt;/a&gt; for more details.&lt;/p&gt;
+
+&lt;h2 id=&quot;why-you-may-not-want-__chkstk&quot;&gt;Why you may not want __chkstk&lt;/h2&gt;
+
+&lt;p&gt;As you may imagine, having this little routine run on &lt;strong&gt;every function call&lt;/strong&gt; is wasteful. The cost of each page fault is paid only once, but &lt;code class=&quot;highlighter-rouge&quot;&gt;__chkstk&lt;/code&gt; has to do its little dance and burn cycles on instructions that do nothing every time a function is called.&lt;/p&gt;
+
+&lt;p&gt;Fortunately it can be disabled on MSVC with the following &lt;code class=&quot;highlighter-rouge&quot;&gt;cl.exe&lt;/code&gt; flags:&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;&lt;a href=&quot;https://msdn.microsoft.com/en-us/library/9598wk25.aspx?f=255&amp;amp;MSPPError=-2147217396&quot;&gt;/GsXXX&lt;/a&gt; where &lt;code class=&quot;highlighter-rouge&quot;&gt;XXX&lt;/code&gt; is the threshold in bytes that prompts the insertion of the &lt;code class=&quot;highlighter-rouge&quot;&gt;__chkstk&lt;/code&gt; probe. If you set this to a high number, like 10000000, no stack probes will be inserted.&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;https://msdn.microsoft.com/en-us/library/8cxs58a6.aspx&quot;&gt;/STACK:reserve[,commit]&lt;/a&gt; reserves and, more importantly, &lt;strong&gt;commits&lt;/strong&gt; the specified bytes for stack space used by the application. By default &lt;code class=&quot;highlighter-rouge&quot;&gt;reserve&lt;/code&gt; is 1 MB and &lt;code class=&quot;highlighter-rouge&quot;&gt;commit&lt;/code&gt; is 4 KB, so if you set both reserve and commit to the same number you won’t have to manually trigger faults to expand stack space.&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2 id=&quot;llvm-and-mingw-dont-support-__chkstk-disabling&quot;&gt;LLVM and mingw don’t support __chkstk disabling&lt;/h2&gt;
+
+&lt;p&gt;Unfortunately LLVM’s code generator for Windows targets use an &lt;a href=&quot;https://github.com/llvm-mirror/llvm/blob/cd5b3fa3e75b54b04a3ef6ce5229f1c6b0d6b2b8/lib/Target/X86/X86FrameLowering.cpp#L950-L958&quot;&gt;hard-coded probe size of 4K&lt;/a&gt; as of LLVM 5.0, and this size can only be changed on a per-function basis with the &lt;code class=&quot;highlighter-rouge&quot;&gt;stack-probe-size&lt;/code&gt; function attribute.&lt;/p&gt;
+
+&lt;p&gt;The same goes for mingw-w64, as it automatically outputs the &lt;code class=&quot;highlighter-rouge&quot;&gt;__chkstk_ms&lt;/code&gt; probe for functions that use more than 4 KB, and to my knowledge there is no way to change this, but I didn’t dig deep in the source, as I use mingw only for continuous integration, and not for my main builds.&lt;/p&gt;
+
+&lt;p&gt;The solution I went with is to just redefine the function &lt;code class=&quot;highlighter-rouge&quot;&gt;__chkstk&lt;/code&gt; as a &lt;strong&gt;no-op&lt;/strong&gt; in assembly like so:&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-asm&quot; data-lang=&quot;asm&quot;&gt;.text
+.global __chkstk
+__chkstk:
+  ret&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;When I’ll get further along and lock all toolchain versions, I’ll modify the source to the Windows LLVM code generator to remove the call to &lt;code class=&quot;highlighter-rouge&quot;&gt;__chkstk&lt;/code&gt;, but for now this is a quick and painless solution.&lt;/p&gt;
+
+</description>
+        <pubDate>Mon, 21 Nov 2016 01:00:00 +0100</pubDate>
+        <link>https://metricpanda.com/rival-fortress-update-45-dealing-with-__chkstk-__chkstk_ms-when-cross-compiling-for-windows/index.html</link>
+        <guid isPermaLink="true">https://metricpanda.com/rival-fortress-update-45-dealing-with-__chkstk-__chkstk_ms-when-cross-compiling-for-windows/index.html</guid>
+        
+        
+        <category>technical</category>
+        
+        <category>development</category>
+        
+        <category>engine</category>
+        
+        <category>rival-fortress</category>
+        
+      </item>
+    
+      <item>
+        <title>Rival Fortress Update #44: Reducing The Platform API Surface</title>
+        <description>&lt;p&gt;This week I started work on the Windows platform layer for &lt;a href=&quot;/rival-fortress/index.html&quot;&gt;Rival Fortress&lt;/a&gt;, and while I was at it, I also reduced the number of functions exposed by the API.&lt;/p&gt;
+
+&lt;h2 id=&quot;the-platform-layer&quot;&gt;The platform layer&lt;/h2&gt;
+
+&lt;p&gt;As is common in many modern games,  Rival Fortress doesn’t interact directly with the operating system, but make calls through a &lt;strong&gt;platform API&lt;/strong&gt; that is a thin abstraction over OS services.&lt;/p&gt;
+
+&lt;p&gt;For example, the platform API exposes an &lt;code class=&quot;highlighter-rouge&quot;&gt;AllocateMemory&lt;/code&gt; function that returns a chunk of memory, and behind the scenes uses a custom allocator for the OS based on &lt;code class=&quot;highlighter-rouge&quot;&gt;VirtualAlloc&lt;/code&gt; on Windows or &lt;code class=&quot;highlighter-rouge&quot;&gt;mmap&lt;/code&gt; on Linux/macOS.&lt;/p&gt;
+
+&lt;p&gt;The advantage of this approach is that it removes platform implementation details from game code and makes portability much easier: as long as the platform can expose all functions in the API, the game will run.&lt;/p&gt;
+
+&lt;p&gt;You may argue that the C/C++ standard library already provides this level of abstraction and portability, but having a tight API boundary gives you the flexibility of using whatever you want behind the scenes, like optimized system calls if standard library functions are not ideal.&lt;/p&gt;
+
+&lt;h2 id=&quot;striving-for-a-minimal-api&quot;&gt;Striving for a minimal API&lt;/h2&gt;
+
+&lt;p&gt;Designing the The platform API is tricky. The number of functions exposed needs to strike a balance between just enough to get the job done efficiently and not too many as to negate the usefulness of the idea.&lt;/p&gt;
+
+&lt;p&gt;The platform API for Rival Fortress has gone through many iterations, and in its current state it looks like this:&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-cpp&quot; data-lang=&quot;cpp&quot;&gt;&lt;span class=&quot;k&quot;&gt;typedef&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;struct&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;MPEPlatformAPI&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+  &lt;span class=&quot;c1&quot;&gt;// NOTE: Memory&lt;/span&gt;
+  &lt;span class=&quot;n&quot;&gt;PFN_AllocateMemory&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;AllocateMemory&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+  &lt;span class=&quot;n&quot;&gt;PFN_DeallocateMemory&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;DeallocateMemory&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+
+
+  &lt;span class=&quot;c1&quot;&gt;// NOTE: Filesystem&lt;/span&gt;
+  &lt;span class=&quot;n&quot;&gt;PFN_GetDirectoryList&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;GetDirectoryList&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+  &lt;span class=&quot;n&quot;&gt;PFN_FileOpen&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;FileOpen&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+  &lt;span class=&quot;n&quot;&gt;PFN_FileClose&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;FileClose&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+  &lt;span class=&quot;n&quot;&gt;PFN_FileRead&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;FileRead&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+  &lt;span class=&quot;n&quot;&gt;PFN_FileWrite&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;FileWrite&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+
+  &lt;span class=&quot;c1&quot;&gt;// NOTE: Threading&lt;/span&gt;
+  &lt;span class=&quot;n&quot;&gt;PFN_SemaphorePost&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;SemaphorePost&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+  &lt;span class=&quot;n&quot;&gt;PFN_SemaphoreWait&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;SemaphoreWait&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+
+  &lt;span class=&quot;c1&quot;&gt;// NOTE: I/O&lt;/span&gt;
+  &lt;span class=&quot;n&quot;&gt;PFN_PollEvents&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;PollEvents&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+  &lt;span class=&quot;n&quot;&gt;PFN_SubmitGraphicsAndSound&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;SubmitGraphicsAndSound&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+
+&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;MPEPlatformAPI&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;PFN_&lt;/code&gt; is the prefix I use for &lt;code class=&quot;highlighter-rouge&quot;&gt;typedef&lt;/code&gt;-ed function pointers.&lt;/p&gt;
+
+&lt;p&gt;In debug builds the game code is built as a &lt;code class=&quot;highlighter-rouge&quot;&gt;DLL&lt;/code&gt;, so platform API is passed as a &lt;code class=&quot;highlighter-rouge&quot;&gt;struct&lt;/code&gt; that is copied to a global object, so that the game code can be unloaded and reloaded as I explain in the &lt;a href=&quot;/rival-fortress-update-1-hot-swappable-game-modules/index.html&quot;&gt;Hot Swappable Game Modules&lt;/a&gt; post.&lt;/p&gt;
+
+&lt;p&gt;In release builds the game and platform are built as a single executable, so function pointers are not needed and the API functions are called directly.&lt;/p&gt;
+
+&lt;p&gt;In code, platform calls go through the &lt;code class=&quot;highlighter-rouge&quot;&gt;MPE_PLATFORM&lt;/code&gt; macro, that conditionally calls the function pointers or the functions directly like so:&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-cpp&quot; data-lang=&quot;cpp&quot;&gt;&lt;span class=&quot;cp&quot;&gt;#if MPE_BUILD_STANDALONE_EXE
+#define MPE_PLATFORM(Name, ...) MPE_Platform##Name(__VA_ARGS__)
+#else
+&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;static&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;MPEPlatformAPI&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;GlobalPlatformAPI&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+&lt;span class=&quot;cp&quot;&gt;#define MPE_PLATFORM(Name, ...) GlobalPlatformAPI.Name(__VA_ARGS__)
+#endif&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+</description>
+        <pubDate>Mon, 14 Nov 2016 01:00:00 +0100</pubDate>
+        <link>https://metricpanda.com/rival-fortress-update-44-reducing-the-platform-surface/index.html</link>
+        <guid isPermaLink="true">https://metricpanda.com/rival-fortress-update-44-reducing-the-platform-surface/index.html</guid>
+        
+        
+        <category>technical</category>
+        
+        <category>development</category>
+        
+        <category>engine</category>
+        
+        <category>rival-fortress</category>
+        
+      </item>
+    
+      <item>
+        <title>Rival Fortress Update #43: Standalone Assembly Files And Inlining</title>
+        <description>&lt;p&gt;Every so often, when the compiler is slacking, I pop the hood and get my hands dirty with assembly.&lt;/p&gt;
+
+&lt;p&gt;My modus operandi is to write the optimized function in an &lt;code class=&quot;highlighter-rouge&quot;&gt;.asm&lt;/code&gt;, assemble it with &lt;a href=&quot;http://www.nasm.us/&quot;&gt;NASM&lt;/a&gt; and add it to the build, along with other &lt;code class=&quot;highlighter-rouge&quot;&gt;.asm&lt;/code&gt; functions, as a static library.&lt;/p&gt;
+
+&lt;p&gt;The problem with this approach is that, to my knowledge, GCC, Clang and MSVC are not able to apply &lt;a href=&quot;http://llvm.org/docs/LinkTimeOptimization.html&quot;&gt;Link Time Optimization&lt;/a&gt; when working with object files that have been compiled from assembly.&lt;/p&gt;
+
+&lt;p&gt;This means that even simple procedures or functions are not inlined, and have to pay the overhead associated with a function call.&lt;/p&gt;
+
+&lt;h2 id=&quot;a-simple-example&quot;&gt;A simple example&lt;/h2&gt;
+
+&lt;p&gt;Ignoring for a moment the fact that the every compiler exposes a builtin that provides this exact functionality (e.g. &lt;code class=&quot;highlighter-rouge&quot;&gt;__builtin_ia32_rdtsc()&lt;/code&gt;), imagine you needed to add a &lt;a href=&quot;https://en.wikipedia.org/wiki/Time_Stamp_Counter&quot;&gt;Time Stamp Counter&lt;/a&gt; function to your application.&lt;/p&gt;
+
+&lt;p&gt;The following is a dummy application that uses the RDTSC function (the multiply between &lt;code class=&quot;highlighter-rouge&quot;&gt;GetRDTSC&lt;/code&gt; and &lt;code class=&quot;highlighter-rouge&quot;&gt;argc&lt;/code&gt; is there to avoid the compiler optimizing it away):&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-c&quot; data-lang=&quot;c&quot;&gt;&lt;span class=&quot;cp&quot;&gt;#ifdef __cplusplus
+&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;extern&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;&quot;C&quot;&lt;/span&gt;
+&lt;span class=&quot;cp&quot;&gt;#endif
+&lt;/span&gt;&lt;span class=&quot;kt&quot;&gt;unsigned&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;long&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;GetRDTSC&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;();&lt;/span&gt;
+
+&lt;span class=&quot;kt&quot;&gt;int&lt;/span&gt;
+&lt;span class=&quot;nf&quot;&gt;main&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;kt&quot;&gt;int&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;argc&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;char&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;**&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;argv&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+  &lt;span class=&quot;kt&quot;&gt;int&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;Result&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;kt&quot;&gt;int&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;GetRDTSC&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;*&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;argc&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+  &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;Result&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;In order to add the functionality you would have two approaches:&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;compile the function as a &lt;strong&gt;standalone assembly&lt;/strong&gt; file and add the object file to your build&lt;/li&gt;
+  &lt;li&gt;use &lt;strong&gt;inline assembly&lt;/strong&gt; (if your compiler supports it)&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2 id=&quot;standalone-assembly&quot;&gt;Standalone assembly&lt;/h2&gt;
+
+&lt;p&gt;Standalons assembly works on all compilers and, using &lt;a href=&quot;https://en.wikipedia.org/wiki/X86_assembly_language#Syntax&quot;&gt;AT&amp;amp;T syntax&lt;/a&gt;, looks like this:&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-assembly&quot; data-lang=&quot;assembly&quot;&gt;.global GetRDTSC
+
+GetRDTSC:
+  rdtsc         // read time-stamp counter into EDX:EAX
+  shl $32, %rdx // combine into RAX register
+  or %rdx, %rax
+  ret&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;The output produced by GCC and Clang (MSVC produces something similar) when compiled with all optimizations (&lt;code class=&quot;highlighter-rouge&quot;&gt;-O3 -flto&lt;/code&gt;) is:&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-assembly&quot; data-lang=&quot;assembly&quot;&gt; Dump of assembler code for function main:
+   0x00000000004004a0 &amp;lt;+0&amp;gt;:     push   %rbx
+   0x00000000004004a1 &amp;lt;+1&amp;gt;:     mov    %edi,%ebx
+   0x00000000004004a3 &amp;lt;+3&amp;gt;:     callq  0x400488 &amp;lt;GetRDTSC&amp;gt;
+   0x00000000004004a8 &amp;lt;+8&amp;gt;:     imul   %ebx,%eax
+   0x00000000004004ab &amp;lt;+11&amp;gt;:    pop    %rbx
+   0x00000000004004ac &amp;lt;+12&amp;gt;:    retq&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;As you can see, the function has not been inlined, despite begin just three instructions, because (I speculate) the assembler doesn’t decorate the object file with the metadata required by linker in order to optimize the function away when going through &lt;em&gt;link time optimization&lt;/em&gt;.&lt;/p&gt;
+
+&lt;h2 id=&quot;the-inline-assembly-way&quot;&gt;The inline assembly way&lt;/h2&gt;
+
+&lt;p&gt;When using inline assembly, on the other hand, things work as expected, and the resulting binary is optimized correctly.&lt;/p&gt;
+
+&lt;p&gt;This is the inline equivalent of the previous &lt;code class=&quot;highlighter-rouge&quot;&gt;GetRDTSC&lt;/code&gt; function, using the &lt;a href=&quot;https://gcc.gnu.org/onlinedocs/gcc/Extended-Asm.html&quot;&gt;GCC Extended Asm&lt;/a&gt; syntax:&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-c&quot; data-lang=&quot;c&quot;&gt;&lt;span class=&quot;k&quot;&gt;static&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;unsigned&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;long&lt;/span&gt;
+&lt;span class=&quot;nf&quot;&gt;GetRDTSC&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+  &lt;span class=&quot;c1&quot;&gt;// read time-stamp counter into EDX:EAX&lt;/span&gt;
+  &lt;span class=&quot;c1&quot;&gt;// then combine into RAX register&lt;/span&gt;
+  &lt;span class=&quot;kt&quot;&gt;unsigned&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;Low&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;High&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+  &lt;span class=&quot;n&quot;&gt;__asm__&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;rdtsc&quot;&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;&quot;=a&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;Low&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;),&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;&quot;=d&quot;&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;High&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;));&lt;/span&gt;
+  &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;((&lt;/span&gt;&lt;span class=&quot;kt&quot;&gt;unsigned&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;long&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;Low&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;|&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(((&lt;/span&gt;&lt;span class=&quot;kt&quot;&gt;unsigned&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;long&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;High&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;lt;&amp;lt;&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;32&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;And this is the disassembled &lt;code class=&quot;highlighter-rouge&quot;&gt;main&lt;/code&gt; function:&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-assembly&quot; data-lang=&quot;assembly&quot;&gt; Dump of assembler code for function main:
+   0x00000000004003b0 &amp;lt;+0&amp;gt;:     rdtsc
+   0x00000000004003b2 &amp;lt;+2&amp;gt;:     shl    $0x20,%rdx
+   0x00000000004003b6 &amp;lt;+6&amp;gt;:     or     %rdx,%rax
+   0x00000000004003b9 &amp;lt;+9&amp;gt;:     imul   %edi,%eax
+   0x00000000004003bc &amp;lt;+12&amp;gt;:    retq&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;Perfect! The function call and associated stack manipulation are gone, and only the essential instructions remain.&lt;/p&gt;
+
+&lt;p&gt;This is the superior approach for compact procedures that are invoked frequently, but can quickly become impossible to maintain as the complexity of the assembly function rises.&lt;/p&gt;
+
+&lt;p&gt;In &lt;a href=&quot;/rival-fortress/index.html&quot;&gt;Rival Fortress&lt;/a&gt; I use a mixture of both approaches: I initially write and debug assembly functions as standalone files, and during profiling sessions I decided if it is worth it to inline them.&lt;/p&gt;
+
+&lt;p&gt;&lt;em&gt;NOTE&lt;/em&gt;: &lt;em&gt;Inline assembly doesn’t work on MSVC when compiling for x64 targets, so you are out of luck if that is your compiler of choice.&lt;/em&gt;&lt;/p&gt;
+</description>
+        <pubDate>Mon, 07 Nov 2016 01:00:00 +0100</pubDate>
+        <link>https://metricpanda.com/rival-fortress-update-43-standalone-assembly-files-and-inlining/index.html</link>
+        <guid isPermaLink="true">https://metricpanda.com/rival-fortress-update-43-standalone-assembly-files-and-inlining/index.html</guid>
+        
+        
+        <category>technical</category>
+        
+        <category>development</category>
+        
+        <category>engine</category>
+        
+        <category>rival-fortress</category>
+        
+      </item>
+    
+      <item>
+        <title>Rival Fortress Update #42: Code Cleanup</title>
+        <description>&lt;p&gt;After last week’s &lt;a href=&quot;/rival-fortress-update-41-from-c-to-c/index.html&quot;&gt;transition from C++ to C99&lt;/a&gt;, I decided to dedicate this week to code cleanup.&lt;/p&gt;
+
+&lt;h2 id=&quot;re-enabling-all-warnings&quot;&gt;Re-enabling all warnings&lt;/h2&gt;
+&lt;p&gt;My compiler of choice is &lt;a href=&quot;https://clang.llvm.org/&quot;&gt;Clang&lt;/a&gt; and I like to build with the &lt;code class=&quot;highlighter-rouge&quot;&gt;-Weverything&lt;/code&gt; and disabled warnings to a minimum, but whenever I do a cleanup pass (or when I upgrade my compiler toolchain) I re-enable all warnings in order to reassess the state of the codebase.&lt;/p&gt;
+
+&lt;p&gt;I also try to keep the code GCC-compatible, but I usually only use it during cleanup/benchmarking sessions, as I find it to be slower than Clang for day-to-day usage. Plus I feel the warnings are still not up to par, compared with Clang’s excellent error reporting.&lt;/p&gt;
+
+&lt;h2 id=&quot;merciless-removal-courtesy-of-git&quot;&gt;Merciless removal, courtesy of git&lt;/h2&gt;
+
+&lt;p&gt;I tend to aggressively delete unused code paths during cleanup passes. I lean heavily on carefully crafted &lt;code class=&quot;highlighter-rouge&quot;&gt;git&lt;/code&gt; commits in order to make it easy on myself in case I ever need to recover deleted code.&lt;/p&gt;
+
+&lt;p&gt;For each coherent block of code I delete, I make a commit with only that change and a commit message stuffed with relevant keywords that I can later &lt;code class=&quot;highlighter-rouge&quot;&gt;grep&lt;/code&gt; on in case of need.&lt;/p&gt;
+
+&lt;p&gt;I also try not to touch API boundaries as much as possible, in order to avoid introducing bugs, but if I find unused functions, or branches I’m quick to the delete key.&lt;/p&gt;
+
+&lt;h2 id=&quot;gcc-attributes&quot;&gt;GCC attributes&lt;/h2&gt;
+&lt;p&gt;During cleanup passes I also like to add GCC-style &lt;a href=&quot;https://gcc.gnu.org/onlinedocs/gcc/Function-Attributes.html&quot;&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;__attribute__&lt;/code&gt; decorations&lt;/a&gt;, as I found quite a few of them can help catch bugs.&lt;/p&gt;
+
+&lt;p&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;__attribute__((warn_unused_result))&lt;/code&gt;, for example, is one of my favorite function attributes, as it causes a warning to be emitted if a caller of the function does not use its return value.&lt;/p&gt;
+
+&lt;p&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;__attribute__((pure))&lt;/code&gt; is another attribute I use quite often, more for documentation purposes than for compiler optimization.&lt;/p&gt;
+
+&lt;h2 id=&quot;a-sprinkle-of-unit-tests&quot;&gt;A sprinkle of unit tests&lt;/h2&gt;
+
+&lt;p&gt;The test suite for &lt;a href=&quot;/rival-fortress/index.html&quot;&gt;Rival Fortress&lt;/a&gt; is pretty poor, if I have to be honest, so I try to invest some of the alloted cleanup time to adding some unit tests for algorithmically complex and functions that look like they have poor coverage.&lt;/p&gt;
+
+&lt;p&gt;I guesstimate code coverage for a function with the simple terminal onliner: &lt;code class=&quot;highlighter-rouge&quot;&gt;grep FUNCTIONAME | wc -l&lt;/code&gt;. This gives me the all the callsites for the function, so I can quickly skim through, and get a feel for the use cases.&lt;/p&gt;
+
+&lt;p&gt;One of these days I’ll have to look into &lt;a href=&quot;http://llvm.org/docs/CoverageMappingFormat.html&quot;&gt;code coverage mapping&lt;/a&gt;.&lt;/p&gt;
+
+</description>
+        <pubDate>Mon, 31 Oct 2016 01:00:00 +0100</pubDate>
+        <link>https://metricpanda.com/rival-fortress-update-42-code-cleanup/index.html</link>
+        <guid isPermaLink="true">https://metricpanda.com/rival-fortress-update-42-code-cleanup/index.html</guid>
+        
+        
+        <category>technical</category>
+        
+        <category>development</category>
+        
+        <category>engine</category>
+        
+        <category>rival-fortress</category>
+        
+      </item>
+    
+      <item>
+        <title>Rival Fortress Update #41: From C++ To C</title>
+        <description>&lt;p&gt;Over the past couple of months I’ve been working as a consultant on an embedded project written in C99 and I’ve been toying with the idea of transitioning the codebase of &lt;a href=&quot;/rival-fortress/index.html&quot;&gt;Rival Fortress&lt;/a&gt; from C++ to plain C.&lt;/p&gt;
+
+&lt;p&gt;As I hinted in a &lt;a href=&quot;/rival-fortress-update-20-the-c-subset/index.html&quot;&gt;previous post&lt;/a&gt; I’m not a big fan of most of the features that C++ offers, and in the past month I realized how much I enjoy the &lt;em&gt;bare bones&lt;/em&gt; feel of coding in plain C.&lt;/p&gt;
+
+&lt;p&gt;This weekend I decided to bite the bullet and changed the build script flag from &lt;code class=&quot;highlighter-rouge&quot;&gt;-std=c++11&lt;/code&gt; to &lt;code class=&quot;highlighter-rouge&quot;&gt;-std=c99&lt;/code&gt;.&lt;/p&gt;
+
+&lt;p&gt;To my surprise porting the game to C didn’t take too long: I was done in a couple of days.&lt;/p&gt;
+
+&lt;h2 id=&quot;bye-bye-overloading&quot;&gt;Bye bye overloading&lt;/h2&gt;
+
+&lt;p&gt;One of the “features” of C that I never thought I would come to appreciate is the lack of function overloading.&lt;/p&gt;
+
+&lt;p&gt;Like many Linux programmers, my home is in the &lt;code class=&quot;highlighter-rouge&quot;&gt;shell&lt;/code&gt;, and being able to &lt;code class=&quot;highlighter-rouge&quot;&gt;grep&lt;/code&gt; the codebase for a function name and having it return a list of all the exact call sites has been proven to be very useful in more than one occasion.&lt;/p&gt;
+
+&lt;p&gt;The lack of operator overloading does make to code very verbose at times, but I’m the kind of guy that likes long variable and function names, so that’s a plus for me.&lt;/p&gt;
+
+&lt;h2 id=&quot;surprise-compile-times&quot;&gt;Surprise compile times&lt;/h2&gt;
+
+&lt;p&gt;Another surprise was the speed up in compilation time. I wasn’t expecting much as I was already light on &lt;em&gt;bloaty&lt;/em&gt; C++ features, but after the port the compilation time went from 0.9 seconds to 0.7 in debug mode.&lt;/p&gt;
+
+&lt;p&gt;The codebase is currently at about 95k lines of code for the game and engine plus about 15k for the development tools. Every executable is compiled as a &lt;a href=&quot;https://en.wikipedia.org/wiki/Single_Compilation_Unit&quot;&gt;single compilation unit&lt;/a&gt; with &lt;a href=&quot;https://www.gnu.org/software/make/&quot;&gt;GNU Make&lt;/a&gt;.&lt;/p&gt;
+</description>
+        <pubDate>Mon, 24 Oct 2016 02:00:00 +0200</pubDate>
+        <link>https://metricpanda.com/rival-fortress-update-41-from-c-to-c/index.html</link>
+        <guid isPermaLink="true">https://metricpanda.com/rival-fortress-update-41-from-c-to-c/index.html</guid>
+        
+        
+        <category>technical</category>
+        
+        <category>development</category>
+        
+        <category>engine</category>
+        
+        <category>rival-fortress</category>
+        
+      </item>
+    
+      <item>
+        <title>Rival Fortress Update #40: Category-Based Logging Using Bit Masks</title>
+        <description>&lt;p class=&quot;note&quot;&gt;&lt;b&gt;Note&lt;/b&gt;: You can find the source code for the bit flag logger generator on &lt;a href=&quot;https://github.com/MetricPanda/loggen&quot;&gt;Github&lt;/a&gt;.&lt;/p&gt;
+
+&lt;p&gt;The logging system I wrote for Metric Panda Engine uses bit masks to support arbitrary composition of logging categories like so:&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-cpp&quot; data-lang=&quot;cpp&quot;&gt;  &lt;span class=&quot;n&quot;&gt;Log&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;INFO&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;&quot;One&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;                  &lt;span class=&quot;c1&quot;&gt;// Outputs: [INFO ][         ][    ] One&lt;/span&gt;
+  &lt;span class=&quot;n&quot;&gt;Log&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;ERROR&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;CATEGORY1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;&quot;Two&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;       &lt;span class=&quot;c1&quot;&gt;// Outputs: [ERROR][CATEGORY1][    ] Two&lt;/span&gt;
+  &lt;span class=&quot;n&quot;&gt;Log&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;CATEGORY1&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;CAT2&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;&quot;Three&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;      &lt;span class=&quot;c1&quot;&gt;// Outputs: [     ][CATEGORY1][CAT2] Three&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;The &lt;code class=&quot;highlighter-rouge&quot;&gt;Log&lt;/code&gt; macro takes a bit mask that is used to filter log messages based on a verbosity mask. The log message, in this case a simple &lt;code class=&quot;highlighter-rouge&quot;&gt;printf&lt;/code&gt;, is prepended with a prefix that is generated from the bit mask.&lt;/p&gt;
+
+&lt;p&gt;Category labels used in the log prefix are resolved at compile time, when building in optimized mode, and the only branch is on the verbosity bit-mask.&lt;/p&gt;
+
+&lt;h2 id=&quot;why-bit-masks&quot;&gt;Why bit masks&lt;/h2&gt;
+&lt;p&gt;Other than the fact that, in my opinion, the API is quite comfortable, using bit masks makes pinpoint filtering much easier.&lt;/p&gt;
+
+&lt;p&gt;For example, in Metric Panda Engine I use three log categories, with labels along these lines:&lt;/p&gt;
+&lt;ul&gt;
+  &lt;li&gt;&lt;strong&gt;Severity&lt;/strong&gt;: &lt;code class=&quot;highlighter-rouge&quot;&gt;VERBOSE&lt;/code&gt;, &lt;code class=&quot;highlighter-rouge&quot;&gt;INFO&lt;/code&gt;, &lt;code class=&quot;highlighter-rouge&quot;&gt;WARN&lt;/code&gt;, &lt;code class=&quot;highlighter-rouge&quot;&gt;ERROR&lt;/code&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;strong&gt;Subsystem&lt;/strong&gt;: &lt;code class=&quot;highlighter-rouge&quot;&gt;AUDIO&lt;/code&gt;, &lt;code class=&quot;highlighter-rouge&quot;&gt;RENDER&lt;/code&gt;, &lt;code class=&quot;highlighter-rouge&quot;&gt;NET&lt;/code&gt;, &lt;code class=&quot;highlighter-rouge&quot;&gt;INPUT&lt;/code&gt;, …&lt;/li&gt;
+  &lt;li&gt;&lt;strong&gt;Subcategory&lt;/strong&gt;: &lt;code class=&quot;highlighter-rouge&quot;&gt;INIT&lt;/code&gt;, &lt;code class=&quot;highlighter-rouge&quot;&gt;SHUTDOWN&lt;/code&gt;, &lt;code class=&quot;highlighter-rouge&quot;&gt;DRAW&lt;/code&gt;, &lt;code class=&quot;highlighter-rouge&quot;&gt;SAMPLE&lt;/code&gt;, …&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;When investigating a particular subsystem, it is quite easy to filter only events related to it, for example by setting the verbosity mask to &lt;code class=&quot;highlighter-rouge&quot;&gt;RENDER|INIT&lt;/code&gt; messages of any severity coming from the initialization part of the rendering subsystem are shown.&lt;/p&gt;
+
+&lt;h2 id=&quot;name-collisions&quot;&gt;Name collisions&lt;/h2&gt;
+
+&lt;p&gt;In order to keep category labels short and easy to type, while also avoiding name collisions, the &lt;code class=&quot;highlighter-rouge&quot;&gt;Log&lt;/code&gt; macro looks like this:&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-cpp&quot; data-lang=&quot;cpp&quot;&gt;&lt;span class=&quot;k&quot;&gt;enum&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+  &lt;span class=&quot;n&quot;&gt;LOG_VERBOSE&lt;/span&gt;        &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;lt;&amp;lt;&lt;/span&gt;  &lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+  &lt;span class=&quot;n&quot;&gt;LOG_INFO&lt;/span&gt;           &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;lt;&amp;lt;&lt;/span&gt;  &lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+  &lt;span class=&quot;n&quot;&gt;LOG_WARN&lt;/span&gt;           &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;lt;&amp;lt;&lt;/span&gt;  &lt;span class=&quot;mi&quot;&gt;2&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;};&lt;/span&gt;
+
+&lt;span class=&quot;cp&quot;&gt;#define Log(Flags, ...) \
+{ \
+  enum { \
+    VERBOSE    = LOG_VERBOSE, \
+    INFO       = LOG_INFO, \
+    WARN       = LOG_WARN, \
+  }; \
+  ... \
+}&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;As you can see, the short labels are “aliases” to longer equivalents with the &lt;code class=&quot;highlighter-rouge&quot;&gt;LOG_&lt;/code&gt; prefix.
+The shorter labels are confined to the scope of the macro so they don’t leak out causing collisions.&lt;/p&gt;
+
+&lt;p&gt;Unfortunately collisions can still occur if macros in the outer scope have the same name as the short labels, like the following example:&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-cpp&quot; data-lang=&quot;cpp&quot;&gt;&lt;span class=&quot;cp&quot;&gt;#define INIT(X) 
+&lt;/span&gt;&lt;span class=&quot;c1&quot;&gt;// ...&lt;/span&gt;
+  &lt;span class=&quot;n&quot;&gt;Log&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;INFO&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;RENDER&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;INIT&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;&quot;Setting up XYZ&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt; &lt;span class=&quot;c1&quot;&gt;// This won't compile&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;Fortunately the collision is detected at compile time, so it can be easily fixed by changing the conflicting log label. In Metric Panda Engine I &lt;a href=&quot;/rival-fortress-update-38-include-detective-keep-an-eye-on-those-includes/index.html&quot;&gt;removed all external includes&lt;/a&gt; so I have the luxury of using concise names without fear of collisions.&lt;/p&gt;
+
+&lt;h2 id=&quot;filtering-log-entries&quot;&gt;Filtering log entries&lt;/h2&gt;
+
+&lt;p&gt;Filtering is done by wrapping the actual logging function in an &lt;code class=&quot;highlighter-rouge&quot;&gt;if&lt;/code&gt; statement like so:&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-cpp&quot; data-lang=&quot;cpp&quot;&gt;&lt;span class=&quot;cp&quot;&gt;#define Log(Flags, ...) \
+  ... \
+  if ((Flags) &amp;amp; GlobalVerbosity) { \
+    DoTheLogging(...); \
+  } \
+}&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;The &lt;code class=&quot;highlighter-rouge&quot;&gt;GlobalVerbosity&lt;/code&gt; variable is an integer that can be set to the desired bit mask. Since the &lt;code class=&quot;highlighter-rouge&quot;&gt;GlobalVerbosity&lt;/code&gt; is set outside the macro, the longer version of the log labels are used, like so:&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-cpp&quot; data-lang=&quot;cpp&quot;&gt;&lt;span class=&quot;kt&quot;&gt;int&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;GlobalVerbosity&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+
+&lt;span class=&quot;kt&quot;&gt;int&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;main&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+  &lt;span class=&quot;n&quot;&gt;GlobalVerbosity&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;LOG_INFO&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;|&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;LOG_RENDER&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;|&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;LOG_INIT&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+  &lt;span class=&quot;c1&quot;&gt;// ...&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;h2 id=&quot;printing-label-strings&quot;&gt;Printing label strings&lt;/h2&gt;
+
+&lt;p&gt;In order to print the labels I’m using simple lookup functions that look like this:&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-cpp&quot; data-lang=&quot;cpp&quot;&gt;&lt;span class=&quot;k&quot;&gt;static&lt;/span&gt; &lt;span class=&quot;kr&quot;&gt;inline&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;const&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;char&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;*&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;LOG_PrioritiesLabel&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;kt&quot;&gt;int&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;Flags&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+  &lt;span class=&quot;k&quot;&gt;switch&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;Flags&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;amp;&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;LOG_PRIORITIES_MASK&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+  &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+    &lt;span class=&quot;k&quot;&gt;case&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;LOG_VERBOSE&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;     &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;&quot;[VERBOSE]&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+    &lt;span class=&quot;k&quot;&gt;case&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;LOG_INFO&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;        &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;&quot;[INFO   ]&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+    &lt;span class=&quot;k&quot;&gt;case&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;LOG_WARN&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;        &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;&quot;[WARN   ]&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+    &lt;span class=&quot;k&quot;&gt;case&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;LOG_ERROR&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;       &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;&quot;[ERROR  ]&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+    &lt;span class=&quot;k&quot;&gt;case&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;LOG_FATAL&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;       &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;&quot;[FATAL  ]&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+  &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+  &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;&quot;[       ]&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;As I mentioned earlier, this function is trivially collapsed by the compiler since the &lt;code class=&quot;highlighter-rouge&quot;&gt;Flags&lt;/code&gt; variable is known at compile time, so there is no cost to this approach.&lt;/p&gt;
+
+&lt;p&gt;The &lt;code class=&quot;highlighter-rouge&quot;&gt;LOG_PRIORITIES_MASK&lt;/code&gt; is an integer that masks only the bits that, in this case, make up the priorities labels.&lt;/p&gt;
+
+&lt;h2 id=&quot;generating-the-logger-code&quot;&gt;Generating the logger code&lt;/h2&gt;
+
+&lt;p&gt;None of the code I showed is written by hand, it is all generated by the &lt;strong&gt;Metareflect&lt;/strong&gt; system that &lt;a href=&quot;/rival-fortress-update-39-how-i-use-__counter__-to-localize-text-and-hash-strings-at-compile-time/index.html&quot;&gt;I talked about&lt;/a&gt; in &lt;a href=&quot;/rival-fortress-update-7-reflection-preprocessor-in-c-cpp/index.html&quot;&gt;previous posts&lt;/a&gt;.&lt;/p&gt;
+
+&lt;p&gt;I extracted the relevant bits into a standalone logger generator, &lt;a href=&quot;https://github.com/MetricPanda/loggen&quot;&gt;loggen&lt;/a&gt; that is up on Github.&lt;/p&gt;
+
+&lt;p&gt;Give it a try!&lt;/p&gt;
+</description>
+        <pubDate>Sat, 22 Oct 2016 02:00:00 +0200</pubDate>
+        <link>https://metricpanda.com/rival-fortress-update-40-category-based-logging-using-bit-masks/index.html</link>
+        <guid isPermaLink="true">https://metricpanda.com/rival-fortress-update-40-category-based-logging-using-bit-masks/index.html</guid>
+        
+        
+        <category>technical</category>
+        
+        <category>development</category>
+        
+        <category>engine</category>
+        
+        <category>rival-fortress</category>
+        
+      </item>
+    
+      <item>
+        <title>Rival Fortress Update #39: How I Use __COUNTER__ To Localize Text And Hash Strings At Compile Time</title>
+        <description>&lt;p&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;__COUNTER__&lt;/code&gt; is a preprocessor macro available in most compilers that expands to sequential integers starting from zero.&lt;/p&gt;
+
+&lt;p&gt;It resets at the beginning of each new &lt;a href=&quot;https://en.wikipedia.org/wiki/Translation_unit_(programming)&quot;&gt;translation unit&lt;/a&gt; (i.e. each object file), and is commonly used with the paste (&lt;code class=&quot;highlighter-rouge&quot;&gt;##&lt;/code&gt;) operator to create unique identifiers within other macros.&lt;/p&gt;
+
+&lt;p&gt;While on working on the localization bits for &lt;a href=&quot;/rival-fortress/index.html&quot;&gt;Rival Fortress&lt;/a&gt;, I stumbled upon an interesting usage for &lt;code class=&quot;highlighter-rouge&quot;&gt;__COUNTER__&lt;/code&gt; that has allowed me to generate fast localization lookups and string hashing that are resolved at compile time and have an API that looks like this:&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-cpp&quot; data-lang=&quot;cpp&quot;&gt;&lt;span class=&quot;cp&quot;&gt;#define T(X) Translate(__COUNTER__)
+#define H(X) HashString(__COUNTER__)
+&lt;/span&gt;
+&lt;span class=&quot;kt&quot;&gt;void&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;SomeFunction&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+  &lt;span class=&quot;n&quot;&gt;printf&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;%s %u&lt;/span&gt;&lt;span class=&quot;se&quot;&gt;\n&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;T&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;Hello&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;),&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;H&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;asset.png&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;));&lt;/span&gt; &lt;span class=&quot;c1&quot;&gt;// Prints &quot;Hola 1927298820&quot;&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;In this post I’ll talk about what goes on behind the scenes of the previous snippet of code.&lt;/p&gt;
+
+&lt;h2 id=&quot;guaranteed-monotonic&quot;&gt;Guaranteed monotonic&lt;/h2&gt;
+
+&lt;p&gt;I’m compiling the project as a &lt;a href=&quot;https://en.wikipedia.org/wiki/Single_Compilation_Unit&quot;&gt;single compilation unit&lt;/a&gt; (a.k.a. unity build), meaning all source files are included from one master source. The main advantage of this approach is fast compilation times: the codebase currently clocks in at about 95k LOC and compiles in less than a second in debug mode.&lt;/p&gt;
+
+&lt;p&gt;The other advantage of using a unity build is that &lt;code class=&quot;highlighter-rouge&quot;&gt;__COUNTER__&lt;/code&gt; is guaranteed to be strictly monotonic, meaning no two values it produces are equal.&lt;/p&gt;
+
+&lt;p&gt;Having a unique counter means that lookup tables can become a thing.&lt;/p&gt;
+
+&lt;p&gt;Lookup tables indexed on compile time constants are trivial to inline by any compiler worth its salt, so that’s exactly what I did.&lt;/p&gt;
+
+&lt;h2 id=&quot;metareflect-refresher&quot;&gt;Metareflect refresher&lt;/h2&gt;
+
+&lt;p&gt;I previously talked about the custom &lt;a href=&quot;/rival-fortress-update-7-reflection-preprocessor-in-c-cpp/index.html&quot;&gt;reflection preprocessor&lt;/a&gt; that I implemented in order to automate generation of config files from &lt;code class=&quot;highlighter-rouge&quot;&gt;structs&lt;/code&gt;.&lt;/p&gt;
+
+&lt;p&gt;As a refresher, &lt;strong&gt;Metareflect&lt;/strong&gt;, as I’ve called it, is a standalone executable that runs before the compiler, as part of the build process.&lt;/p&gt;
+
+&lt;p&gt;It lexes and parses C code in the same manner as a compiler front end does in the preprocessing phase, and looks for special annotation tokens that look like this:&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-cpp&quot; data-lang=&quot;cpp&quot;&gt;&lt;span class=&quot;cp&quot;&gt;#define MREFLECT(...)
+&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;MREFLECT&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;Struct&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;typedef&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;struct&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;MPEConfig&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+  &lt;span class=&quot;n&quot;&gt;MREFLECT&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;Config&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;&quot;Engine&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;Default&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;DEFAULT_FULLSCREEN_MODE&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+  &lt;span class=&quot;n&quot;&gt;MPEFullscreenMode&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;FullscreenMode&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;MPEConfig&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;As you can see, the &lt;code class=&quot;highlighter-rouge&quot;&gt;MREFLECT()&lt;/code&gt; macro expands to nothing at compile time, but is used as an annotation that Metareflect understands and uses as a directive to generate code.&lt;/p&gt;
+
+&lt;p&gt;The previous snippet, for example, would cause Metareflect to generate the code needed for reading and writing the &lt;code class=&quot;highlighter-rouge&quot;&gt;struct&lt;/code&gt; to and from an &lt;code class=&quot;highlighter-rouge&quot;&gt;INI&lt;/code&gt;. &lt;code class=&quot;highlighter-rouge&quot;&gt;Config&lt;/code&gt; and &lt;code class=&quot;highlighter-rouge&quot;&gt;Default&lt;/code&gt; are options that, in this case, tell Metareflect that the configuration setting should be placed in the &lt;code class=&quot;highlighter-rouge&quot;&gt;[Engine]&lt;/code&gt; section with a default value of &lt;code class=&quot;highlighter-rouge&quot;&gt;DEFAULT_FULLSCREEN_MODE&lt;/code&gt;.&lt;/p&gt;
+
+&lt;p&gt;The generated code is saved in the &lt;code class=&quot;highlighter-rouge&quot;&gt;src/generated/&lt;/code&gt; folder and included by the rest of the codebase. If you are familiar with Unreal Engine, I’ve based Metareflect on their “&lt;em&gt;UPROPERTY&lt;/em&gt;” reflection system.&lt;/p&gt;
+
+&lt;h2 id=&quot;generating-translation-lookup-tables&quot;&gt;Generating translation lookup tables&lt;/h2&gt;
+
+&lt;p&gt;I expanded Metareflect making it generate the code for a lookup table for translation entries using &lt;code class=&quot;highlighter-rouge&quot;&gt;__COUNTER__&lt;/code&gt;, and this is what it looks like:&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-cpp&quot; data-lang=&quot;cpp&quot;&gt;&lt;span class=&quot;cp&quot;&gt;#define T(X) Translate(__COUNTER__)
+&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;static&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;const&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;char&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;*&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;GlobalTranslationTable&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;3&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;];&lt;/span&gt;
+
+&lt;span class=&quot;kr&quot;&gt;inline&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;const&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;char&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;*&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;Translate&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;kt&quot;&gt;int&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;Counter&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+  &lt;span class=&quot;k&quot;&gt;switch&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;Counter&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+  &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+    &lt;span class=&quot;k&quot;&gt;case&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;
+    &lt;span class=&quot;k&quot;&gt;case&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;5&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;
+    &lt;span class=&quot;k&quot;&gt;case&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;7&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;
+      &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;GlobalTranslationTable&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;];&lt;/span&gt;
+    &lt;span class=&quot;k&quot;&gt;case&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;2&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;
+    &lt;span class=&quot;k&quot;&gt;case&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;6&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;
+      &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;GlobalTranslationTable&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;];&lt;/span&gt;
+    &lt;span class=&quot;k&quot;&gt;case&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;4&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;
+      &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;GlobalTranslationTable&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;2&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;];&lt;/span&gt;
+  &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+  &lt;span class=&quot;c1&quot;&gt;// This is never executed&lt;/span&gt;
+  &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;&quot;&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;The &lt;code class=&quot;highlighter-rouge&quot;&gt;switch&lt;/code&gt; statement maps each &lt;code class=&quot;highlighter-rouge&quot;&gt;__COUNTER__&lt;/code&gt; value to a string. As you can see, it handles duplicate strings by collapsing &lt;code class=&quot;highlighter-rouge&quot;&gt;case&lt;/code&gt; statements.&lt;/p&gt;
+
+&lt;p&gt;The number of entries in the &lt;code class=&quot;highlighter-rouge&quot;&gt;GlobalTranslationTable&lt;/code&gt; is calculated by Metareflect by counting unique entries passed to the &lt;code class=&quot;highlighter-rouge&quot;&gt;T(X)&lt;/code&gt; macro. These entries are stored in a simple hashtable-like data structure that uses the argument of the &lt;code class=&quot;highlighter-rouge&quot;&gt;T(X)&lt;/code&gt; macro hashed as a 32 bit unsigned integer as key. Eventual key collision can easily resolved by adding a second parameter to the macro and using it as seed for the hash function.&lt;/p&gt;
+
+&lt;p&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;GlobalTranslationTable&lt;/code&gt; is populated at runtime from either from the default &lt;code class=&quot;highlighter-rouge&quot;&gt;char*&lt;/code&gt; array, that contains the entries found in the source code or from a binary localization file, also generated by Metareflect. Changing language is simply a matter of &lt;code class=&quot;highlighter-rouge&quot;&gt;memcpy&lt;/code&gt;-ing the correct translation table over the global.&lt;/p&gt;
+
+&lt;p&gt;This approach is very fast, as the &lt;code class=&quot;highlighter-rouge&quot;&gt;Translate&lt;/code&gt; function is guaranteed to be inlined because &lt;code class=&quot;highlighter-rouge&quot;&gt;Counter&lt;/code&gt; is known at compile time. The compiler will replace each call to &lt;code class=&quot;highlighter-rouge&quot;&gt;Translate&lt;/code&gt; with a &lt;code class=&quot;highlighter-rouge&quot;&gt;mov&lt;/code&gt; instruction pointing to the offset in the &lt;code class=&quot;highlighter-rouge&quot;&gt;GlobalTranslationTable&lt;/code&gt; that in turn contains a pointer to the localized string.&lt;/p&gt;
+
+&lt;h2 id=&quot;outputting-translator-friendly-csv-files&quot;&gt;Outputting Translator friendly CSV files&lt;/h2&gt;
+
+&lt;p&gt;Using Metareflect I’m also generating CSV files for translators. The CSVs use the argument of the &lt;code class=&quot;highlighter-rouge&quot;&gt;T(X)&lt;/code&gt; macro as key, so the binary translation file can be remapped to the correct &lt;code class=&quot;highlighter-rouge&quot;&gt;__COUNTER__&lt;/code&gt; even if the lines of code are swapped. This is a one time operation that happens on startup.&lt;/p&gt;
+
+&lt;h2 id=&quot;hashing-strings-at-compile-time&quot;&gt;Hashing strings at compile time&lt;/h2&gt;
+
+&lt;p&gt;Leveraging the same code that generates translation lookup tables, I was also able to make lookup tables for string hashes that look like this:&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-cpp&quot; data-lang=&quot;cpp&quot;&gt;&lt;span class=&quot;cp&quot;&gt;#define H(X) HashString(__COUNTER__)
+&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;static&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;uint32_t&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;GlobalStringHashTable&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;2&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;];&lt;/span&gt;
+
+&lt;span class=&quot;kr&quot;&gt;inline&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;uint32_t&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;HashString&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;kt&quot;&gt;int&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;Counter&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+  &lt;span class=&quot;k&quot;&gt;switch&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;Counter&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+  &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+    &lt;span class=&quot;k&quot;&gt;case&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;
+    &lt;span class=&quot;k&quot;&gt;case&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;3&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;
+      &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;GlobalStringHashTable&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;];&lt;/span&gt;
+    &lt;span class=&quot;k&quot;&gt;case&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;8&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;
+      &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;GlobalStringHashTable&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;];&lt;/span&gt;
+  &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+  &lt;span class=&quot;c1&quot;&gt;// This is never executed&lt;/span&gt;
+  &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;This function is also easily inlined by the compiler so it collapses down to just numbers that replace the macro invocations.&lt;/p&gt;
+
+&lt;h2 id=&quot;does-it-slow-down-compilation-time&quot;&gt;Does it slow down compilation time&lt;/h2&gt;
+
+&lt;p&gt;No. Currently Metareflect is able to do its thing in less than 40ms, spitting out about 15k LOC that include code generated for custom data structures, allocators, INI/JSON reader/writers, networking and more.&lt;/p&gt;
+
+</description>
+        <pubDate>Fri, 14 Oct 2016 02:00:00 +0200</pubDate>
+        <link>https://metricpanda.com/rival-fortress-update-39-how-i-use-__counter__-to-localize-text-and-hash-strings-at-compile-time/index.html</link>
+        <guid isPermaLink="true">https://metricpanda.com/rival-fortress-update-39-how-i-use-__counter__-to-localize-text-and-hash-strings-at-compile-time/index.html</guid>
+        
+        
+        <category>technical</category>
+        
+        <category>development</category>
+        
+        <category>engine</category>
+        
+        <category>rival-fortress</category>
+        
+      </item>
+    
+  </channel>
+</rss>

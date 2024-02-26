@@ -1,0 +1,15 @@
+Sitemap: https://metricpanda.com/sitemap.xml.gz
+User-Agent: *
+Disallow: *.json
+Disallow: /newsletters/
+
+User-agent: ia_archiver
+Disallow: /
+
+User-agent: Teleport Pro
+Disallow: /
+User-agent: Wget
+Disallow: /
+
+User-agent: TurnitinBot
+Disallow: /
